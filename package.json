@@ -1,0 +1,33 @@
+{
+  "name": "create-add-download",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src --watch -d dist"
+  },
+  "bin": {
+    "hs-cli": "./bin/index.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wttwhite/create-add-download.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wttwhite/create-add-download/issues"
+  },
+  "homepage": "https://github.com/wttwhite/create-add-download#readme",
+  "dependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/plugin-transform-runtime": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "commander": "^11.0.0"
+  }
+}
