@@ -1,12 +1,9 @@
 import commander from "commander";
-import create from "./create";
-import add from "./add";
-
+import path from "path";
 // 增加创建和新增一个页面的命令
 const actionMap = {
   create: {
-    description: "创建一个新的项目",
-    // usages: ["hs create ProjectName"],
+    description: "创建一个新的项目:hs-cli create ProjectName",
     alias: "c",
   },
   add: {
@@ -14,35 +11,29 @@ const actionMap = {
     // usages: ["hs add a new view"],
     alias: "a",
   },
+  // 其他命令
+  "*": {
+    description: "commander not found",
+    alias: "",
+  },
 };
 Object.keys(actionMap).forEach((key) => {
   const { description, alias } = actionMap[key];
-  // if (options) {
-  //   Object.keys(options).forEach((optKey) => {
-  //     const obj = options[optKey];
-  //     commander.option(obj.flags, obj.description, obj.defaultValue);
-  //   });
-  // }
   commander
     .command(key)
     .description(description)
     .alias(alias)
     .action(() => {
-      switch (key) {
-        case "create":
-          create(...process.argv.slice(3));
-          break;
-        case "add":
-          add(...process.argv.slice(3));
-          break;
-        default:
-          break;
+      if (key === "*") {
+        console.log(description);
+      } else {
+        require(path.resolve(__dirname, key))(...process.argv.slice(3));
       }
     });
 });
 
 commander.version(require("../package.json").version, "-v -V --version");
-// parse(process.argv)接收参数，一定要放后面,所有指令注册结束后再执行 program.parse()
+// parse(process.argv)接收参数，一定要放后面,所有指令注册结束后再执行 .parse()
 commander.parse(process.argv);
 // 当命令后面没有跟action的时候，给出提示
 if (!process.argv.slice(2).length) {
