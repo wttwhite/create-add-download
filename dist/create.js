@@ -7,53 +7,67 @@ var _utils = require("./utils");
 // 询问用户
 var promptList = [{
   type: "input",
-  name: "content",
-  message: "请输入项目上下文: "
-}, {
-  type: "list",
-  message: "Please choice the project type:",
-  name: "projectType",
-  "default": 0,
-  choices: [{
-    name: "一般表格表单页面",
-    value: 0
-  }, {
-    name: "可视化大屏",
-    value: 1
-  }]
+  name: "context",
+  message: "请输入项目上下文: ",
+  "default": "context-seat"
+},
+// {
+//   type: "list",
+//   message: "Please choice the project type:",
+//   name: "projectType",
+//   default: 0,
+//   choices: [
+//     {
+//       name: "一般表格表单页面",
+//       value: 0,
+//     },
+//     {
+//       name: "可视化大屏",
+//       value: 1,
+//     },
+//   ],
+// },
+{
+  type: "checkbox",
+  message: "请选择需要增加的依赖(空格选中):",
+  name: "dependencies",
+  choices: ["dayjs", "vuex", "hsja-utils"]
 }];
 module.exports = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(projectName) {
+    var answer;
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          console.log("create", projectName);
           if (projectName) {
-            _context2.next = 4;
+            _context2.next = 3;
             break;
           }
           console.log("Please input the Project name");
           return _context2.abrupt("return");
-        case 4:
-          _context2.next = 6;
+        case 3:
+          _context2.next = 5;
           return (0, _utils.judgeExistFold)(projectName);
-        case 6:
-          (0, _utils.downloadTemp)( /*#__PURE__*/function () {
+        case 5:
+          _context2.next = 7;
+          return (0, _utils.inquirerPrompt)(promptList);
+        case 7:
+          answer = _context2.sent;
+          console.log("answer", answer);
+          (0, _utils.downloadTemp)(projectName, /*#__PURE__*/function () {
             var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(data, dir) {
-              var answer;
               return _regenerator["default"].wrap(function _callee$(_context) {
                 while (1) switch (_context.prev = _context.next) {
                   case 0:
-                    _context.next = 2;
-                    return (0, _utils.inquirerPrompt)(promptList);
-                  case 2:
-                    answer = _context.sent;
-                    console.log("answer", answer);
-                    // 渲染模板
-
-                    // renderTemplate(data);
-                    (0, _utils.updatePackageJson)("".concat(dir, "/package.json"), answer);
-                  case 5:
+                    Promise.all([
+                    // 根据选择，增加依赖包
+                    (0, _utils.updatePackageJson)("".concat(dir, "/package.json"), answer),
+                    // 将项目中的上下文改为输入的值
+                    (0, _utils.updateContext)("".concat(dir, "/src/apis/http.js"), answer), (0, _utils.updateContext)("".concat(dir, "/.env"), answer), (0, _utils.updateContext)("".concat(dir, "/vue.config.js"), answer)]).then(function () {
+                      (0, _utils.successAll)(projectName);
+                    });
+                    //
+                  case 1:
                   case "end":
                     return _context.stop();
                 }
@@ -63,7 +77,7 @@ module.exports = /*#__PURE__*/function () {
               return _ref2.apply(this, arguments);
             };
           }());
-        case 7:
+        case 10:
         case "end":
           return _context2.stop();
       }
