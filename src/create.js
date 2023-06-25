@@ -5,7 +5,9 @@ import {
   updateContext,
   updatePackageJson,
   successAll,
+  updateByVueStore,
 } from "./utils";
+import path from "path";
 // 询问用户
 const promptList = [
   {
@@ -32,7 +34,7 @@ const promptList = [
   // },
   {
     type: "checkbox",
-    message: "请选择需要增加的依赖(空格选中):",
+    message: "请选择需要增加的依赖:",
     name: "dependencies",
     choices: ["dayjs", "vuex", "hsja-utils"],
   },
@@ -43,20 +45,20 @@ module.exports = async (projectName) => {
     return;
   }
   // 判断文件是否存在
-  await judgeExistFold(projectName);
+  // await judgeExistFold(projectName);
   const answer = await inquirerPrompt(promptList);
   console.log("answer", answer);
   downloadTemp(projectName, async (data, dir) => {
     Promise.all([
       // 根据选择，增加依赖包
-      updatePackageJson(`${dir}/package.json`, answer),
+      updatePackageJson(path.join(dir, "package.json"), answer),
       // 将项目中的上下文改为输入的值
-      updateContext(`${dir}/src/apis/http.js`, answer),
-      updateContext(`${dir}/.env`, answer),
-      updateContext(`${dir}/vue.config.js`, answer),
+      updateContext(path.join(dir, "src", "apis", "http.js"), answer),
+      updateContext(path.join(dir, ".env"), answer),
+      updateContext(path.join(dir, "vue.config.js"), answer),
+      updateByVueStore(path.join(dir, "src"), answer),
     ]).then(() => {
       successAll(projectName);
     });
-    //
   });
 };

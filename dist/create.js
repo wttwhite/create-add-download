@@ -4,6 +4,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _utils = require("./utils");
+var _path = _interopRequireDefault(require("path"));
 // 询问用户
 var promptList = [{
   type: "input",
@@ -29,7 +30,7 @@ var promptList = [{
 // },
 {
   type: "checkbox",
-  message: "请选择需要增加的依赖(空格选中):",
+  message: "请选择需要增加的依赖:",
   name: "dependencies",
   choices: ["dayjs", "vuex", "hsja-utils"]
 }];
@@ -47,11 +48,8 @@ module.exports = /*#__PURE__*/function () {
           return _context2.abrupt("return");
         case 3:
           _context2.next = 5;
-          return (0, _utils.judgeExistFold)(projectName);
-        case 5:
-          _context2.next = 7;
           return (0, _utils.inquirerPrompt)(promptList);
-        case 7:
+        case 5:
           answer = _context2.sent;
           console.log("answer", answer);
           (0, _utils.downloadTemp)(projectName, /*#__PURE__*/function () {
@@ -61,12 +59,11 @@ module.exports = /*#__PURE__*/function () {
                   case 0:
                     Promise.all([
                     // 根据选择，增加依赖包
-                    (0, _utils.updatePackageJson)("".concat(dir, "/package.json"), answer),
+                    (0, _utils.updatePackageJson)(_path["default"].join(dir, "package.json"), answer),
                     // 将项目中的上下文改为输入的值
-                    (0, _utils.updateContext)("".concat(dir, "/src/apis/http.js"), answer), (0, _utils.updateContext)("".concat(dir, "/.env"), answer), (0, _utils.updateContext)("".concat(dir, "/vue.config.js"), answer)]).then(function () {
+                    (0, _utils.updateContext)(_path["default"].join(dir, "src", "apis", "http.js"), answer), (0, _utils.updateContext)(_path["default"].join(dir, ".env"), answer), (0, _utils.updateContext)(_path["default"].join(dir, "vue.config.js"), answer), (0, _utils.updateByVueStore)(_path["default"].join(dir, "src"), answer)]).then(function () {
                       (0, _utils.successAll)(projectName);
                     });
-                    //
                   case 1:
                   case "end":
                     return _context.stop();
@@ -77,7 +74,7 @@ module.exports = /*#__PURE__*/function () {
               return _ref2.apply(this, arguments);
             };
           }());
-        case 10:
+        case 8:
         case "end":
           return _context2.stop();
       }

@@ -85,6 +85,38 @@ const updateContext = (filePath, answer) => {
     }
   });
 };
+// 如果有vuex则要更改项目中相关文件
+const updateByVueStore = (fatherFilePath, answer) => {
+  const mainJsPath = path.join(fatherFilePath, "main.js");
+  shell.chmod("777", mainJsPath);
+  return new Promise((resolve) => {
+    const data = fs.readFileSync(mainJsPath).toString();
+    if (answer.dependencies.includes("vuex")) {
+      fs.writeFileSync(
+        mainJsPath,
+        data
+          .replace(
+            /\/\/ import store from \'@\/store\'/,
+            `import store from '@/store'`
+          )
+          .data.replace(/\/\/ store,/, `store,`),
+        "utf-8"
+      );
+    } else {
+      fs.writeFileSync(
+        mainJsPath,
+        data
+          .replace(/\/\/ import store from \'@\/store\'/, ``)
+          .replace(/\/\/ store,/, ``),
+        "utf-8"
+      );
+      // 删除store文件, 要先删除文件，不然会报文件夹非空
+      fs.unlinkSync(path.join(fatherFilePath, "store", "index.js"));
+      fs.rmdirSync(path.join(fatherFilePath, "store"));
+    }
+    resolve();
+  });
+};
 
 const successAll = (projectName) => {
   console.log(
@@ -106,4 +138,5 @@ module.exports = {
   updatePackageJson,
   updateContext,
   successAll,
+  updateByVueStore,
 };
