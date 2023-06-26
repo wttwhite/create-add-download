@@ -32,7 +32,8 @@ var promptList = [{
   type: "checkbox",
   message: "请选择需要增加的依赖:",
   name: "dependencies",
-  choices: ["dayjs", "vuex", "hsja-utils"]
+  choices: ["dayjs", "vuex", "hsja-utils"],
+  "default": ["dayjs", "vuex", "hsja-utils"]
 }];
 module.exports = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(projectName) {
@@ -48,10 +49,13 @@ module.exports = /*#__PURE__*/function () {
           return _context2.abrupt("return");
         case 3:
           _context2.next = 5;
-          return (0, _utils.inquirerPrompt)(promptList);
+          return (0, _utils.judgeExistFold)(projectName);
         case 5:
+          _context2.next = 7;
+          return (0, _utils.inquirerPrompt)(promptList);
+        case 7:
           answer = _context2.sent;
-          console.log("answer", answer);
+          // console.log("answer", answer);
           (0, _utils.downloadTemp)(projectName, /*#__PURE__*/function () {
             var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(data, dir) {
               return _regenerator["default"].wrap(function _callee$(_context) {
@@ -74,7 +78,7 @@ module.exports = /*#__PURE__*/function () {
               return _ref2.apply(this, arguments);
             };
           }());
-        case 8:
+        case 9:
         case "end":
           return _context2.stop();
       }

@@ -37,6 +37,7 @@ const promptList = [
     message: "请选择需要增加的依赖:",
     name: "dependencies",
     choices: ["dayjs", "vuex", "hsja-utils"],
+    default: ["dayjs", "vuex", "hsja-utils"],
   },
 ];
 module.exports = async (projectName) => {
@@ -45,9 +46,9 @@ module.exports = async (projectName) => {
     return;
   }
   // 判断文件是否存在
-  // await judgeExistFold(projectName);
+  await judgeExistFold(projectName);
   const answer = await inquirerPrompt(promptList);
-  console.log("answer", answer);
+  // console.log("answer", answer);
   downloadTemp(projectName, async (data, dir) => {
     Promise.all([
       // 根据选择，增加依赖包

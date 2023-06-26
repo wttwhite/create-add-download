@@ -1,7 +1,6 @@
 import ora from "ora"; // 终端loading显示
 import path from "path";
 import downloadGitRepo from "download-git-repo";
-import metalSmith from "metalsmith";
 import inquirer from "inquirer";
 import fs from "fs";
 import shell from "shelljs";
@@ -99,7 +98,7 @@ const updateByVueStore = (fatherFilePath, answer) => {
             /\/\/ import store from \'@\/store\'/,
             `import store from '@/store'`
           )
-          .data.replace(/\/\/ store,/, `store,`),
+          .replace(/\/\/ store,/, `store,`),
         "utf-8"
       );
     } else {
@@ -130,6 +129,38 @@ const successAll = (projectName) => {
       }`
     )
   );
+};
+
+//删除目录下的所有文件
+const delFile = (fileUrl, isDirectory) => {
+  if (!fs.existsSync(fileUrl)) return;
+  if (fs.statSync(fileUrl).isDirectory()) {
+    // 当前文件为文件夹时
+    var files = fs.readdirSync(fileUrl);
+    var len = files.length,
+      removeNumber = 0;
+    if (len > 0) {
+      files.forEach(function (file) {
+        removeNumber++;
+        var stats = fs.statSync(fileUrl + "/" + file);
+        var url = fileUrl + "/" + file;
+        if (fs.statSync(url).isDirectory()) {
+          delFile(url, true);
+        } else {
+          fs.unlinkSync(url);
+        }
+      });
+      if (len == removeNumber && isDirectory) {
+        fs.rmdirSync(fileUrl);
+      }
+    } else if (len == 0 && isDirectory) {
+      fs.rmdirSync(fileUrl);
+    }
+  } else {
+    // 当前文件为文件时
+    fs.unlinkSync(fileUrl);
+    console.log("删除文件" + fileUrl + "成功");
+  }
 };
 module.exports = {
   judgeExistFold,
