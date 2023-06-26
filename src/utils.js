@@ -132,34 +132,33 @@ const successAll = (projectName) => {
 };
 
 //删除目录下的所有文件
-const delFile = (fileUrl, isDirectory) => {
-  if (!fs.existsSync(fileUrl)) return;
-  if (fs.statSync(fileUrl).isDirectory()) {
+const delFile = (filePath, isDirectory) => {
+  if (!fs.existsSync(filePath)) return;
+  if (fs.statSync(filePath).isDirectory()) {
     // 当前文件为文件夹时
-    var files = fs.readdirSync(fileUrl);
-    var len = files.length,
-      removeNumber = 0;
+    const files = fs.readdirSync(filePath);
+    const len = files.length;
+    let removeNumber = 0;
     if (len > 0) {
       files.forEach(function (file) {
         removeNumber++;
-        var stats = fs.statSync(fileUrl + "/" + file);
-        var url = fileUrl + "/" + file;
-        if (fs.statSync(url).isDirectory()) {
-          delFile(url, true);
+        var childPath = path.join(filePath, file);
+        if (fs.statSync(childPath).isDirectory()) {
+          delFile(childPath, true);
         } else {
-          fs.unlinkSync(url);
+          fs.unlinkSync(childPath);
         }
       });
-      if (len == removeNumber && isDirectory) {
-        fs.rmdirSync(fileUrl);
+      if (len === removeNumber && isDirectory) {
+        fs.rmdirSync(filePath);
       }
-    } else if (len == 0 && isDirectory) {
-      fs.rmdirSync(fileUrl);
+    } else if (len === 0 && isDirectory) {
+      fs.rmdirSync(filePath);
     }
   } else {
     // 当前文件为文件时
-    fs.unlinkSync(fileUrl);
-    console.log("删除文件" + fileUrl + "成功");
+    fs.unlinkSync(filePath);
+    console.log("删除文件" + filePath + "成功");
   }
 };
 module.exports = {
@@ -170,4 +169,5 @@ module.exports = {
   updateContext,
   successAll,
   updateByVueStore,
+  delFile,
 };

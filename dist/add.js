@@ -10,60 +10,90 @@ function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 // 询问用户
-var promptList = [{
+var promptViewList = [{
   type: "checkbox",
   message: "请选择需要增加的页面:",
   name: "addPages",
   choices: ["common-table", "common-table-demo1"]
 }];
-module.exports = /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-  var _yield$inquirerPrompt, addPages;
-  return _regenerator["default"].wrap(function _callee2$(_context2) {
-    while (1) switch (_context2.prev = _context2.next) {
-      case 0:
-        _context2.next = 2;
-        return (0, _utils.inquirerPrompt)(promptList);
-      case 2:
-        _yield$inquirerPrompt = _context2.sent;
-        addPages = _yield$inquirerPrompt.addPages;
-        (0, _utils.downloadTemp)(".hs-ui-template", /*#__PURE__*/function () {
-          var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(data, dir) {
-            var _iterator, _step, page, pagePath, targetPath;
-            return _regenerator["default"].wrap(function _callee$(_context) {
-              while (1) switch (_context.prev = _context.next) {
-                case 0:
-                  // console.log("process.cwd()", process.cwd()); // 当前项目 xxxx/create-add-download
-                  // console.log("__dirname", __dirname); //  xxxx/create-add-download/dist
-                  // 下载完成之后，移动文件位置
-                  _iterator = _createForOfIteratorHelper(addPages);
-                  try {
-                    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                      page = _step.value;
-                      pagePath = _path["default"].join(dir, "src", "views", page);
-                      targetPath = _path["default"].join(process.cwd(), "src", "views", page);
-                      (0, _utils.judgeExistFold)(targetPath);
-                      // 移动文件
-                      _shelljs["default"].mv(pagePath, targetPath);
+var promptComList = [{
+  type: "checkbox",
+  message: "请选择需要增加的组件:",
+  name: "addPages",
+  choices: ["hs-pagination"]
+}];
+module.exports = /*#__PURE__*/function () {
+  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(typeName) {
+    var promptList, _yield$inquirerPrompt, addPages;
+    return _regenerator["default"].wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          console.log("typeName", typeName);
+          promptList = promptViewList;
+          if (!typeName) {
+            typeName = "views";
+          } else if (typeName.indexOf("com") > -1) {
+            typeName = "components";
+            promptList = promptComList;
+          } else {
+            typeName = "views";
+          }
+          _context2.next = 5;
+          return (0, _utils.inquirerPrompt)(promptList);
+        case 5:
+          _yield$inquirerPrompt = _context2.sent;
+          addPages = _yield$inquirerPrompt.addPages;
+          console.log("addPages", addPages);
+          if (!(!addPages || addPages.length === 0)) {
+            _context2.next = 11;
+            break;
+          }
+          console.log("请选择需要增加的页面/组件");
+          return _context2.abrupt("return");
+        case 11:
+          (0, _utils.downloadTemp)(".hs-ui-template", /*#__PURE__*/function () {
+            var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(data, dir) {
+              var _iterator, _step, page, pagePath, targetPath;
+              return _regenerator["default"].wrap(function _callee$(_context) {
+                while (1) switch (_context.prev = _context.next) {
+                  case 0:
+                    // console.log("process.cwd()", process.cwd()); // 当前项目 xxxx/create-add-download
+                    // console.log("__dirname", __dirname); //  xxxx/create-add-download/dist
+                    // 下载完成之后，移动文件位置
+                    _iterator = _createForOfIteratorHelper(addPages);
+                    try {
+                      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                        page = _step.value;
+                        pagePath = _path["default"].join(dir, "src", typeName, page);
+                        targetPath = _path["default"].join(process.cwd(), "src", typeName, page);
+                        (0, _utils.judgeExistFold)(targetPath);
+                        // 移动文件
+                        _shelljs["default"].mv(pagePath, targetPath);
+                      }
                       // 删除临时文件
+                    } catch (err) {
+                      _iterator.e(err);
+                    } finally {
+                      _iterator.f();
                     }
-                  } catch (err) {
-                    _iterator.e(err);
-                  } finally {
-                    _iterator.f();
-                  }
-                case 2:
-                case "end":
-                  return _context.stop();
-              }
-            }, _callee);
-          }));
-          return function (_x, _x2) {
-            return _ref2.apply(this, arguments);
-          };
-        }());
-      case 5:
-      case "end":
-        return _context2.stop();
-    }
-  }, _callee2);
-}));
+                    (0, _utils.delFile)(dir, true);
+                  case 3:
+                  case "end":
+                    return _context.stop();
+                }
+              }, _callee);
+            }));
+            return function (_x2, _x3) {
+              return _ref2.apply(this, arguments);
+            };
+          }());
+        case 12:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2);
+  }));
+  return function (_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
