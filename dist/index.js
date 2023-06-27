@@ -11,7 +11,7 @@ var actionMap = {
     alias: "c"
   },
   add: {
-    description: "工程目录下添加一个新页面",
+    description: "工程目录下添加一个新页面:hs-cli add view 或者 hs-cli add com",
     // usages: ["hs add a new view"],
     alias: "a"
   },

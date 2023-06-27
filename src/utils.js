@@ -20,17 +20,25 @@ const downloadTemp = (fileName, cb) => {
   });
 };
 // 判断文件是否存在
-const judgeExistFold = async (name) => {
+const judgeExistFold = async (
+  name,
+  errorLog = "当前文件已经存在, 请改变文件名并重新创建"
+) => {
   return new Promise((resolve) => {
     if (fs.existsSync(name)) {
-      console.log(
-        logSymbol.error,
-        chalk.red(
-          "The folder name already exists, please change the name and create again."
-        )
-      );
+      console.log(logSymbol.error, chalk.red(errorLog));
     } else {
       resolve();
+    }
+  });
+};
+// 判断文件是否不存在
+const judgeNotExistFold = async (name, errorLog = "不存在文件") => {
+  return new Promise((resolve) => {
+    if (fs.existsSync(name)) {
+      resolve();
+    } else {
+      console.log(logSymbol.error, chalk.red(errorLog));
     }
   });
 };
@@ -122,7 +130,7 @@ const successAll = (projectName) => {
     logSymbol.success,
     chalk.white(
       `${
-        `let we start developing the ${projectName}!\n\n` +
+        `let we start developing the ${projectName}!\n` +
         chalk.cyan(`${chalk.gray("$")} cd ${projectName}\n`) +
         chalk.cyan(`${chalk.gray("$")} npm install\n`) +
         chalk.cyan(`${chalk.gray("$")} npm run serve`)
@@ -130,35 +138,31 @@ const successAll = (projectName) => {
     )
   );
 };
+const addSuccess = () => {
+  console.log(logSymbol.success, chalk.white(`${`下载成功!\n`}`));
+};
 
 //删除目录下的所有文件
-const delFile = (filePath, isDirectory) => {
+// 如果要删除的是文件，且存在，则直接删除
+// 如果要删除的是文件夹，那么会遍历文件夹下的文件（文件夹），然后执行递归
+const delFile = (filePath) => {
   if (!fs.existsSync(filePath)) return;
-  if (fs.statSync(filePath).isDirectory()) {
-    // 当前文件为文件夹时
+  // 当前文件为文件夹时
+  const isDirectory = fs.statSync(filePath).isDirectory();
+  if (isDirectory) {
     const files = fs.readdirSync(filePath);
-    const len = files.length;
-    let removeNumber = 0;
-    if (len > 0) {
-      files.forEach(function (file) {
-        removeNumber++;
-        var childPath = path.join(filePath, file);
-        if (fs.statSync(childPath).isDirectory()) {
-          delFile(childPath, true);
-        } else {
-          fs.unlinkSync(childPath);
-        }
-      });
-      if (len === removeNumber && isDirectory) {
-        fs.rmdirSync(filePath);
+    for (const file of files) {
+      const childPath = path.join(filePath, file);
+      if (fs.statSync(childPath).isDirectory()) {
+        delFile(childPath);
+      } else {
+        fs.unlinkSync(childPath);
       }
-    } else if (len === 0 && isDirectory) {
-      fs.rmdirSync(filePath);
     }
+    fs.readdirSync(filePath).length === 0 && fs.rmdirSync(filePath);
   } else {
     // 当前文件为文件时
     fs.unlinkSync(filePath);
-    console.log("删除文件" + filePath + "成功");
   }
 };
 module.exports = {
@@ -170,4 +174,6 @@ module.exports = {
   successAll,
   updateByVueStore,
   delFile,
+  judgeNotExistFold,
+  addSuccess,
 };

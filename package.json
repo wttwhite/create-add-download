@@ -35,7 +35,6 @@
     "log-symbols": "^4.0.0",
     "metalsmith": "^2.6.0",
     "ora": "^5.1.0",
-    "shelljs": "^0.8.5",
-    "uni": "0.0.6"
+    "shelljs": "^0.8.5"
   }
 }
